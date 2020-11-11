@@ -1,17 +1,13 @@
 bool updateLCDTime() {
   tmElements_t tm;
-  char timeStr[16] = {};
+  String timeStr = "";
   lcd.setCursor(0, 0);
 
   //If RTC can be read property
   if (RTC.read(tm)){
     //If sscanf return wrong code then print error and exit function.
-    if(sscanf(timeStr, "%d/%d %d:%d:%d", tm.Month, tm.Day, tm.Hour, tm.Minute, tm.Second) != 5){
-      lcd.print("RTC Time error");
-      return false;
-    }
+    timeStr = String(tm.Month) + "/" + String(tm.Day) + " " + String(tm.Hour) + ":" + convert2digits(tm.Minute) + ":" + convert2digits(tm.Second);
 
-    //Everything of RTC are ok, output to LCD.
     lcd.print(timeStr);
   }
   else{
@@ -44,4 +40,15 @@ void updateDHTdata() {
   lcd.print((char) 0xDF); //度C符號 
   lcd.print(F("C ")); 
   lcd.print(h); lcd.print(F("%")); 
+}
+
+String convert2digits(int number) {
+  String returnStr = "";
+  
+  if (number >= 0 && number < 10) {
+    returnStr = "0" + String(number);  
+    return returnStr;
+  }else{
+    return String(number);
+  }
 }
